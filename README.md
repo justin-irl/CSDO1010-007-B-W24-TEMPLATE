@@ -2,6 +2,10 @@
 
 Template repo for CSDO1010-007-B-W24 labs
 
+## Note
+
+This is specifically configured for usage with a M* chip series Mac (_created and tested on a M2Air_), and may not work as expected on other platforms or devices.  
+
 ## About this repo
 
 ### Automations/GitHub Actions
