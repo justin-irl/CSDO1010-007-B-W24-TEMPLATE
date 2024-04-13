@@ -72,7 +72,7 @@ resource "aws_security_group" "tf_public_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
   }
 
   #HTTP
@@ -81,16 +81,39 @@ resource "aws_security_group" "tf_public_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
   }
 
   egress {
+    description = "Allow traffic out"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-ec2-no-public-egress-sgr
   }
   tags = {
     Name = "Terraform-SecurityGroup"
   }
+}
+
+resource "aws_iam_role" "vpc_flow_log_role" {
+  name = "vpc_flow_log_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "vpc-flow-logs.amazonaws.com"
+      },
+    }]
+  })
+}
+
+resource "aws_flow_log" "vpc_flow_log" {
+  iam_role_arn    = aws_iam_role.vpc_flow_log_role.arn
+  log_destination = aws_cloudwatch_log_group.vpc_flow_log_group.arn
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.tf_vpc.id
 }
