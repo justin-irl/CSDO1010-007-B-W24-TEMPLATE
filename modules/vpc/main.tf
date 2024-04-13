@@ -72,7 +72,7 @@ resource "aws_security_group" "tf_public_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
+    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:aws-vpc-no-public-ingress-sgr
   }
 
   #HTTP
@@ -81,7 +81,7 @@ resource "aws_security_group" "tf_public_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-ingress-sgr
+    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:aws-vpc-no-public-ingress-sgr
   }
 
   egress {
@@ -89,7 +89,7 @@ resource "aws_security_group" "tf_public_sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] #tfsec:ignore:aws-ec2-no-public-egress-sgr
+    cidr_blocks = ["0.0.0.0/0"] # tfsec:ignore:aws-ec2-no-public-egress-sgr
   }
   tags = {
     Name = "Terraform-SecurityGroup"
