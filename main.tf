@@ -26,5 +26,4 @@ module "compute" {
   source         = "./modules/compute"
   subnets        = module.vpc.public_subnets
   security_group = module.vpc.public_sg
-  subnet_ips     = module.vpc.subnet_ips
 }

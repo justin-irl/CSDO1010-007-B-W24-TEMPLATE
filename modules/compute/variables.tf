@@ -5,10 +5,6 @@ variable "region" {
   default = "us-east-1"
 }
 
-variable "subnet_ips" {
-  type        = string
-  description = "List of subnet IDs"
-}
 variable "security_group" {
   type        = string
   description = "ID of the security group"
