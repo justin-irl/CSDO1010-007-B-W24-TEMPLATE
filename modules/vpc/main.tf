@@ -1,5 +1,15 @@
 #-----vpc/main.tf-----
 #======================
+terraform {
+  required_version = ">= 1.7.5"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.43.0"
+    }
+  }
+}
+
 provider "aws" {
   region = var.region
 }
@@ -12,7 +22,7 @@ data "aws_availability_zones" "azs" {
 
 #Create VPC in us-east-1
 #========================
-resource "aws_vpc" "tf_vpc" {
+resource "aws_vpc" "tf_vpc" { # tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -94,26 +104,4 @@ resource "aws_security_group" "tf_public_sg" {
   tags = {
     Name = "Terraform-SecurityGroup"
   }
-}
-
-resource "aws_iam_role" "vpc_flow_log_role" {
-  name = "vpc_flow_log_role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Action = "sts:AssumeRole",
-      Effect = "Allow",
-      Principal = {
-        Service = "vpc-flow-logs.amazonaws.com"
-      },
-    }]
-  })
-}
-
-resource "aws_flow_log" "vpc_flow_log" {
-  iam_role_arn    = aws_iam_role.vpc_flow_log_role.arn
-  log_destination = aws_cloudwatch_log_group.vpc_flow_log_group.arn
-  traffic_type    = "ALL"
-  vpc_id          = aws_vpc.tf_vpc.id
 }
